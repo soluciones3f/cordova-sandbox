@@ -37,22 +37,6 @@
             function(error) {alert(error)} // irrelevant request fileSystem error
         );
 
-        var fileTransfer = new FileTransfer();
-        var uri = encodeURI("http://www.me.gov.ar/doc_pdf/ley_de_educ_nac.pdf");
-
-        fileTransfer.download(
-            uri,
-            "file:///storage/emulated/0/ley_de_educ_nac.pdf",
-            function(entry) {
-                $("#resultado").html("download complete: " + entry.toURL());
-                window.open(entry.toURL(), '_system', 'location=no,closebuttoncaption=Close,enableViewportScale=yes');
-            },
-            function(error) {
-                $("#resultado").append("download error source " + error.source + "<br />");
-                $("#resultado").append("download error target " + error.target + "<br />");
-                $("#resultado").append("upload error code" + error.code);
-            }
-        );
     }
 
     $(document).ready(function(){
