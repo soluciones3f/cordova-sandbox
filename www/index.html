@@ -25,7 +25,10 @@
                 fileTransfer.download(uri, filename,
                     function(entry) { // download success
                         $("#resultado").html("download complete: " + entry.toURL());
-                        window.open(entry.toURL(), '_system', 'location=no,closebuttoncaption=Close,enableViewportScale=yes');
+                        var windowTarget = device.platform.toLowerCase() === "ios" ? "_blank" : "_system";
+                        // 'location=no,closebuttoncaption=Close,enableViewportScale=yes');
+                        window.open(entry.toURL(), windowTarget, "location=no,toolbarposition=top,hidden=no,presentationstyle=pagesheet") ;
+
                     },
                     function(error) {
                         $("#resultado").append("download error source " + error.source + "<br />");
