@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link href="assets/ratchet/css/ratchet.css" rel="stylesheet">
+    <link href="assets/css/styles.css" rel="stylesheet">
+    <link href="assets/css/pageslider.css" rel="stylesheet">
+</head>
+<body>
+    <button id="subir">Subir archivo</button>
+    <div><h4>Resultado</h4><p id="resultado"></p></div>
+<script src="cordova.js"></script>
+<script src="lib/jquery.js"></script>
+<script type="text/javascript">
+    function win (r) {
+        $("#resultado").append("Code = " + r.responseCode + "<br />");
+        $("#resultado").append("Response = " + r.response + "<br />");
+        $("#resultado").append("Sent = " + r.bytesSent);
+    }
+
+    function fail(error) {
+        $("#resultado").html("")
+        $("#resultado").append("An error has occurred: Code = " + error.code + "<br />");
+        $("#resultado").append("upload error source " + error.source + "<br />");
+        $("#resultado").append("upload error target " + error.target);
+    }
+
+    function uploadFile (file) {
+        var fileURL = file.nativeURL
+        var options = new FileUploadOptions();
+        options.fileKey = "file";
+        options.fileName = "testUp.txt";
+        options.mimeType = "text/plain";
+
+        var reader = new FileReader();
+        reader.onloadend = function (evt) {
+            console.log("read success");
+            console.log(evt.target.result);
+        };
+        reader.readAsText(file)
+
+        var params = {};
+        params.note = "test";
+
+        options.params = params;
+
+        var ft = new FileTransfer();
+        ft.upload(fileURL, encodeURI("http://cgi-lib.berkeley.edu/ex/fup.cgi"), win, fail, options);
+    }
+
+    function onSuccess(fileSystem) {
+        fileSystem.root.getFile("testUp.txt", {create: true, exclusive: false}, uploadFile, fail);
+    }
+
+    
+
+    $(document).ready(function(){
+        $("#subir").click(function(e){
+            e.preventDefault()
+            // request the persistent file system
+            window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onSuccess, null);
+        })
+    })
+</script>
+</body>

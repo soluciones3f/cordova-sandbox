@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link href="assets/ratchet/css/ratchet.css" rel="stylesheet">
+    <link href="assets/css/styles.css" rel="stylesheet">
+    <link href="assets/css/pageslider.css" rel="stylesheet">
+</head>
+<body>
+    <button id="descargar">Descargar</button>
+    <div><h4>Resultado</h4><p id="resultado"></p></div>
+<script src="cordova.js"></script>
+<script src="lib/jquery.js"></script>
+<script type="text/javascript">
+    //
+
+    function downloadFile(){
+        var title = "file.pdf"
+        var uri = encodeURI("http://www.me.gov.ar/doc_pdf/ley_de_educ_nac.pdf");
+        window.requestFileSystem(LocalFileSystem.TEMPORARY, 0,
+            function (fileSystem) {
+                var fileTransfer = new FileTransfer();
+                var filename = fileSystem.root.toURL() + title;
+                fileTransfer.download(uri, filename,
+                    function(entry) { // download success
+                        $("#resultado").html("download complete: " + entry.toURL());
+                        window.open(entry.toURL(), '_system', 'location=no,closebuttoncaption=Close,enableViewportScale=yes');
+                    },
+                    function(error) {
+                        $("#resultado").append("download error source " + error.source + "<br />");
+                        $("#resultado").append("download error target " + error.target + "<br />");
+                        $("#resultado").append("upload error code" + error.code);
+                    } 
+                );
+            },
+            function(error) {alert(error)} // irrelevant request fileSystem error
+        );
+
+        var fileTransfer = new FileTransfer();
+        var uri = encodeURI("http://www.me.gov.ar/doc_pdf/ley_de_educ_nac.pdf");
+
+        fileTransfer.download(
+            uri,
+            "file:///storage/emulated/0/ley_de_educ_nac.pdf",
+            function(entry) {
+                $("#resultado").html("download complete: " + entry.toURL());
+                window.open(entry.toURL(), '_system', 'location=no,closebuttoncaption=Close,enableViewportScale=yes');
+            },
+            function(error) {
+                $("#resultado").append("download error source " + error.source + "<br />");
+                $("#resultado").append("download error target " + error.target + "<br />");
+                $("#resultado").append("upload error code" + error.code);
+            }
+        );
+    }
+
+    $(document).ready(function(){
+        $("#descargar").click(function(e){
+            e.preventDefault()
+            downloadFile()
+        })
+    })
+</script>
+</body>

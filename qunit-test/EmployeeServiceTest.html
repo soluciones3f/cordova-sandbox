@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <meta charset="utf-8">
+      <title>QUnit Example</title>
+      <link rel="stylesheet" href="qunit-1.14.0.css">
+    </head>
+    <body>
+      <div id="qunit"></div>
+      <div id="qunit-fixture"></div>
+      <script src="../www/lib/jquery.js"></script>
+      <script src="qunit-1.14.0.js"></script>
+      <script src="jquery.mockjax.js"></script>
+      <script src="../www/js/services/json/EmployeeService.js"></script>
+
+    <script>
+        $.mockjax({
+            url:"http://192.168.33.104:5000/employees?name=*",
+            type:"GET",
+            dataType: 'json',
+            response:function(requestData){
+                 //handle the mock response in here
+                 respuesta = '[{"firstName":"James"}]'
+                 this.responseText = respuesta;
+            }
+        });
+        $.mockjax({
+            url:"http://192.168.33.104:5000/employees/*",
+            type:"GET",
+            dataType: 'json',
+            response:function(requestData){
+                 //handle the mock response in here
+                 respuesta = {id: 1, firstName:"James"}
+                 this.responseText = respuesta;
+            }
+        });
+
+        var service = new EmployeeService()
+        service.initialize()
+
+        asyncTest('Obtener empleados por nombre', function() {
+  
+            $.when( service.findByName("James") ).then(function(employees) {
+                equal(employees.length, 1, "empleados con nombre James");
+                equal(employees[0].firstName, "James")
+            start();
+            });
+          
+        });
+
+        asyncTest('Obtener empleados por id', function() {
+  
+            $.when( service.findById(1) ).then(function(employee) {
+                equal(employee.id, 1, "Obtener el empleado con id = 1");
+            start();
+            });
+          
+        });
+    </script>
+
+    </body>
+</html>
