@@ -14,6 +14,47 @@
 <script src="lib/jquery.js"></script>
 <script type="text/javascript">
     //
+    document.addEventListener('deviceready', function () {
+      window.plugins.webintent.getExtra(webintent.EXTRA_STREAM,
+        function (url)
+        {
+            uploadFile(url)
+
+        }, function(error)
+        {
+            console.log('getExtra: EXTRA_TEXT failed');
+            console.log(error)
+        });
+    });
+
+    function win (r) {
+        $("#resultado").append("Code = " + r.responseCode + "<br />");
+        $("#resultado").append("Response = " + r.response + "<br />");
+        $("#resultado").append("Sent = " + r.bytesSent);
+    }
+
+    function fail(error) {
+        $("#resultado").html("")
+        $("#resultado").append("An error has occurred: Code = " + error.code + "<br />");
+        $("#resultado").append("upload error source " + error.source + "<br />");
+        $("#resultado").append("upload error target " + error.target);
+    }
+
+    function uploadFile (fileURL) {
+        var options = new FileUploadOptions();
+        options.fileKey = "file";        
+        options.fileName = fileURL.substr(fileURL.lastIndexOf('/') + 1);
+        options.mimeType = "application/pdf";
+
+        var params = {};
+        params.note = "test";
+
+        options.params = params;
+
+        var ft = new FileTransfer();
+        ft.upload(fileURL, encodeURI("http://cgi-lib.berkeley.edu/ex/fup.cgi"), win, fail, options);
+    }
+    
 
     function downloadFile(){
         var title = "file.pdf"

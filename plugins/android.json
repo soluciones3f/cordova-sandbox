@@ -35,6 +35,10 @@
                         {
                             "xml": "<feature name=\"InAppBrowser\"><param name=\"android-package\" value=\"org.apache.cordova.inappbrowser.InAppBrowser\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"WebIntent\"><param name=\"android-package\" value=\"com.borismus.webintent.WebIntent\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -97,6 +101,9 @@
             "PACKAGE_NAME": "com.pablo.workshop"
         },
         "org.apache.cordova.inappbrowser": {
+            "PACKAGE_NAME": "com.pablo.workshop"
+        },
+        "com.borismus.webintent": {
             "PACKAGE_NAME": "com.pablo.workshop"
         }
     },
