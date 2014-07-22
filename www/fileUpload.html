@@ -33,20 +33,13 @@
         options.fileName = "testUp.txt";
         options.mimeType = "text/plain";
 
-        var reader = new FileReader();
-        reader.onloadend = function (evt) {
-            console.log("read success");
-            console.log(evt.target.result);
-        };
-        reader.readAsText(file)
-
         var params = {};
         params.note = "test";
 
         options.params = params;
 
         var ft = new FileTransfer();
-        ft.upload(fileURL, encodeURI("http://cgi-lib.berkeley.edu/ex/fup.cgi"), win, fail, options);
+        ft.upload(fileURL, encodeURI("http://192.168.1.152:8080/nire/upload/uploadFile"), win, fail, options);
     }
 
     function onSuccess(fileSystem) {

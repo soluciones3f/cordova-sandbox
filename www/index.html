@@ -34,7 +34,7 @@
     }
 
     function fail(error) {
-        $("#resultado").html("")
+        //$("#resultado").html("")
         $("#resultado").append("An error has occurred: Code = " + error.code + "<br />");
         $("#resultado").append("upload error source " + error.source + "<br />");
         $("#resultado").append("upload error target " + error.target);
@@ -52,7 +52,7 @@
         options.params = params;
 
         var ft = new FileTransfer();
-        ft.upload(fileURL, encodeURI("http://cgi-lib.berkeley.edu/ex/fup.cgi"), win, fail, options);
+        ft.upload(fileURL, encodeURI("http://192.168.1.152:8080/nire/upload/uploadFile"), win, fail, options);
     }
     
 
