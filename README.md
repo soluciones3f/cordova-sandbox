@@ -49,6 +49,27 @@ document.addEventListener('deviceready', function () {
 el Project Number, se genera al registrar el proyecto en android, https://console.developers.google.com/project
 Ahi, tambien hay que obtener el Api Key, en la seccion de APIS & AUTH -> Credentials, Public API access
 
+
+El onNotification va a ser el encargado de registrarce en el servidor y recibir el mensaje
+
+A travez del evento que llega, va a tener los dos casos importantes, 'registered' y 'message':
+
+###### registered
+
+Este evento recibe el token que relaciona la app con el dispositivo, debe enviarselo al backend para que este lo guarde y pueda enviarle los mensajes.
+
+###### message
+
+Este evento recibe el mensaje en si, segun cuando llego el evento y como se estaba ejecutando la app.
+
+1.  si la app se encuentra activo, procesa el mensaje inmediatamente
+
+2.  Si la app esta corriendo pero no esta activa, llega una notificacion en la barra de estado y se ejecuta una vez que el usuario accede al la misma
+
+3.  Si la app estaba detenida, igual caso anterior
+
+A pesar de que los dos ultimos casos son iguales en como se accede, en el javascript es posible diferenciar uno del otro con la variable e.coldstart
+
 ```javascript
 function onNotification(e) {
     $("#resultado").append('<li>EVENT -> RECEIVED:' + e.event + '</li>');
