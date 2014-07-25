@@ -11,21 +11,112 @@
     <button id="descargar">Descargar</button>
     <div><h4>Resultado</h4><p id="resultado"></p></div>
 <script src="cordova.js"></script>
+<script src="js/PushNotification.js"></script>
 <script src="lib/jquery.js"></script>
 <script type="text/javascript">
+    $.support.cors = true
     //
     document.addEventListener('deviceready', function () {
-      window.plugins.webintent.getExtra(webintent.EXTRA_STREAM,
-        function (url)
-        {
-            uploadFile(url)
+        pushNotification = window.plugins.pushNotification;
+        pushNotification.register(
+            successHandler,
+            errorHandler,
+            {
+                "senderID":"168539350639",
+                "ecb":"onNotification"
+            });
 
-        }, function(error)
-        {
-            console.log('getExtra: EXTRA_TEXT failed');
-            console.log(error)
-        });
+
+
+        window.plugins.webintent.getExtra(webintent.EXTRA_STREAM,
+            function (url)
+            {
+                uploadFile(url)
+            }, function(error)
+            {
+                console.log('getExtra: EXTRA_TEXT failed');
+                console.log(error)
+            }
+        );
     });
+
+    function successHandler (result) {
+        $("#resultado").append('result = ' + result);
+    }
+
+    function errorHandler (error) {
+        $("#resultado").append('error = ' + error);
+    }
+
+    function onNotification(e) {
+        $("#resultado").append('<li>EVENT -> RECEIVED:' + e.event + '</li>');
+
+        switch( e.event )
+        {
+        case 'registered':
+            if ( e.regid.length > 0 )
+            {
+                //$("#resultado").append('<li>REGISTERED -> REGID:' + e.regid + "</li>");
+                // Your GCM push server needs to know the regID before it can push to this device
+                // here is where you might want to send it the regID for later use.
+                $.ajax({
+                  type: "GET",
+                  url: "http://192.168.1.152:8080/GrailsPushAndroid/device/subscribe",
+                  data: { deviceToken: e.regid, projectId: "168539350639" }
+                })
+                  .done(function( msg ) {
+                    //$("#resultado").append("Data Saved: " + msg);
+                  }).fail(function( jqXHR, textStatus ) {
+                      //$("#resultado").append( "Request failed: " + textStatus );
+                    });
+                //$("#resultado").append("regID = " + e.regid);
+            }
+        break;
+
+        case 'message':
+            //window.plugin.notification.local.add({ message: 'Great app!' });
+            // if this flag is set, this notification happened while we were in the foreground.
+            // you might want to play a sound to get the user's attention, throw up a dialog, etc.
+            if ( e.foreground )
+            {
+                $("#resultado").append('<li>--INLINE NOTIFICATION--' + '</li>');
+
+                // on Android soundname is outside the payload. 
+                // On Amazon FireOS all custom attributes are contained within payload
+                //var soundfile = e.soundname || e.payload.sound;
+                // if the notification contains a soundname, play it.
+                //var my_media = new Media("/android_asset/www/"+ soundfile);
+                //my_media.play();
+                $("#resultado").append(JSON.stringify(e))
+            }
+            else
+            {  // otherwise we were launched because the user touched a notification in the notification tray.
+                //window.plugin.notification.local.add({ title: "Funciona",message: e.payload.data.message });
+                if ( e.coldstart )
+                {
+                    $("#resultado").append('<li>--COLDSTART NOTIFICATION--' + '</li>');
+                }
+                else
+                {
+                    $("#resultado").append('<li>--BACKGROUND NOTIFICATION--' + '</li>');
+                }
+            }
+           $("#resultado").append('<li>MESSAGE -> MSG: ' + e.payload.data.message + '</li>');
+               //Only works for GCM
+           $("#resultado").append('<li>MESSAGE -> MSGCNT: ' + e.payload.data.msgcnt + '</li>');
+           //Only works on Amazon Fire OS
+           //$status.append('<li>MESSAGE -> TIME: ' + e.payload.timeStamp + '</li>');
+        break;
+
+        case 'error':
+            $("#resultado").append('<li>ERROR -> MSG:' + e.msg + '</li>');
+        break;
+
+        default:
+            $("#resultado").append('<li>EVENT -> Unknown, an event was received and we do not know what it is</li>');
+        break;
+      }
+    }
 
     function win (r) {
         $("#resultado").append("Code = " + r.responseCode + "<br />");
