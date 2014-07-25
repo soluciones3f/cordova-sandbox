@@ -15,7 +15,7 @@ Modificacion en el AndroidManifest (Agregar dentro del activity):
 </intent-filter>
 ```
 
-###### Notificaciones desde el servidor
+##### Notificaciones desde el servidor
 Implemento PushPlugin https://github.com/phonegap-build/PushPlugin
 
 Tener en cuenta al instalarlo de comprobar que el AndroidManifest este de acuerdo a lo que marca el plugin
@@ -41,7 +41,8 @@ document.addEventListener('deviceready', function () {
         errorHandler,
         {
             "senderID":"Project Number",
-            "ecb":"onNotification" //metodo que se llama una vez que android retorna el token del dispositivo, o cuando llega una notificacion
+            "ecb":"onNotification" //metodo que se llama una vez que android retorna el token del dispositivo, 
+            //o cuando llega una notificacion (Si se encuentra en primer plano, si no se ejecuta cuando se accede a la app a travez de la notificacion del status bar)
         });
 })
 ```
